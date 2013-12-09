@@ -1,12 +1,12 @@
 Glaive is a utility for configuring maktaba plugins. It turns this:
 
-  :let g:myplugin\_enablefeature = 1
-  :let g:myplugin\_defaultdir = $HOME
-  :let g:myplugin\_weirdmode = 'm'
+    :let g:myplugin\_enablefeature = 1
+    :let g:myplugin\_defaultdir = $HOME
+    :let g:myplugin\_weirdmode = 'm'
 
 into this:
 
-  :Glaive myplugin enablefeature defaultdir=`$HOME` weirdmode='m'
+    :Glaive myplugin enablefeature defaultdir=`$HOME` weirdmode='m'
 
 In order for this to work, the plugin must use the maktaba flag API. Any plugin
 using the flag API can be configured by glaive.
