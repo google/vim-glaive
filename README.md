@@ -1,8 +1,8 @@
 Glaive is a utility for configuring maktaba plugins. It turns this:
 
-    :let g:myplugin\_enablefeature = 1
-    :let g:myplugin\_defaultdir = $HOME
-    :let g:myplugin\_weirdmode = 'm'
+    :let g:myplugin_enablefeature = 1
+    :let g:myplugin_defaultdir = $HOME
+    :let g:myplugin_weirdmode = 'm'
 
 into this:
 
