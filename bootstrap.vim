@@ -22,9 +22,9 @@ if !exists('*maktaba#compatibility#Disable')
       " We'd like to use maktaba#error#Shout, but maktaba doesn't exist yet.
       echohl ErrorMsg
       echomsg 'Maktaba not found! Glaive depends upon maktaba. Please either:'
-      " TODO(nates): Add a maktaba URL when there is one.
       echomsg '1. Place maktaba in the same directory as this plugin.'
       echomsg '2. Add maktaba to your runtimepath before using this plugin.'
+      echomsg 'Maktaba can be found at http://github.com/google/maktaba.'
       echohl NONE
       finish
     endtry
