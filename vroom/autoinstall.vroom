@@ -1,7 +1,7 @@
 Most users install plugins with a plugin manager such as pathogen, Vundle, or
 NeoBundle. Glaive supports these use cases.
 
-To see how, we start by installig Glaive. In order for these tests to work,
+To see how, we start by installing Glaive. In order for these tests to work,
 maktaba MUST be in the same directory as Glaive. Given that's the case, let's
 get Glaive installed:
 
