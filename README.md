@@ -28,8 +28,7 @@ plugin-adding command is `Bundle`.
 
 The example maktaba plugin is
 [helloworld](https://github.com/google/maktaba/tree/master/examples/helloworld),
-from the maktaba examples directory.  (We will pretend it lives at
-`google/helloworld` so that Vundle can install it.)
+from the maktaba examples directory.
 
 We will use Glaive to enable mappings and set the `name` option to "Bram".
 
