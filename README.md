@@ -42,10 +42,8 @@ call glaive#Install()
 
 " Add helloworld to the runtime path.  (Normally this would be done with another
 " Bundle command, but helloworld doesn't have a repository of its own.)
-let s:path = maktaba#path#Join([
-    \ maktaba#rtp#LeafDirs()['maktaba'],
-    \ 'examples/helloworld'])
-call maktaba#plugin#Install(s:path)
+call maktaba#plugin#Install(maktaba#path#Join([maktaba#Maktaba().location,
+    \ 'examples', 'helloworld']))
 
 " Configure helloworld using glaive.
 Glaive helloworld plugin[mappings] name='Bram'
