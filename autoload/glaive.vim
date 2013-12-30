@@ -52,6 +52,11 @@ endfunction
 " maktaba. This will have no effect on non-maktaba plugins (which were already
 " on the runtimepath), but will cause maktaba instant/* files to load (thus
 " making their flags available).
+"
+" {plugin} will be passed through @function(maktaba#plugin#CanonicalName).
+" Therefore, you can use anything which evaluates to the same canonical name:
+" "my_plugin", "my-plugin", and even "my!plugin" are all equivalent.
+"
 " @throws NotFound if {plugin} cannot be found.
 function! glaive#GetPlugin(plugin) abort
   " Get the maktaba plugin object for a plugin already on the runtimepath.
@@ -60,10 +65,13 @@ function! glaive#GetPlugin(plugin) abort
   " by maktaba. maktaba#plugin#Install is what forces the flags file to load
   " during vimrc time, so we need to make sure that the plugin has been
   " maktaba#plugin#Install'd before we can configure it.
+  let l:canonical_name = maktaba#plugin#CanonicalName(a:plugin)
   let l:plugins = maktaba#rtp#LeafDirs()
-  if has_key(l:plugins, a:plugin)
-    return maktaba#plugin#GetOrInstall(l:plugins[a:plugin])
-  endif
+  for l:key in keys(l:plugins)
+    if maktaba#plugin#CanonicalName(l:key) ==# l:canonical_name
+      return maktaba#plugin#GetOrInstall(l:plugins[l:key])
+    endif
+  endfor
   " The plugin does not appear to be on the runtimepath, but we'll check whether
   " it's registered with maktaba anyway. This is expected to fail with
   " a NotFound error unless maktaba#rtp#LeafDirs was lying to us.
