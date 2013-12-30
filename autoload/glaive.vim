@@ -45,3 +45,27 @@ function! glaive#Configure(plugin, text) abort
     call l:setting.Apply(a:plugin)
   endfor
 endfunction
+
+""
+" Gets {plugin}, which must already be on the runtimepath.
+" Calls maktaba#plugin#Install on {plugin} if it has not yet been installed by
+" maktaba. This will have no effect on non-maktaba plugins (which were already
+" on the runtimepath), but will cause maktaba instant/* files to load (thus
+" making their flags available).
+" @throws NotFound if {plugin} cannot be found.
+function! glaive#GetPlugin(plugin) abort
+  " Get the maktaba plugin object for a plugin already on the runtimepath.
+  " If the plugin was installed with a plugin manager like pathogen or vundle,
+  " then it's possible that it's on the runtimepath but hasn't been "Installed"
+  " by maktaba. maktaba#plugin#Install is what forces the flags file to load
+  " during vimrc time, so we need to make sure that the plugin has been
+  " maktaba#plugin#Install'd before we can configure it.
+  let l:plugins = maktaba#rtp#LeafDirs()
+  if has_key(l:plugins, a:plugin)
+    return maktaba#plugin#GetOrInstall(l:plugins[a:plugin])
+  endif
+  " The plugin does not appear to be on the runtimepath, but we'll check whether
+  " it's registered with maktaba anyway. This is expected to fail with
+  " a NotFound error unless maktaba#rtp#LeafDirs was lying to us.
+  return maktaba#plugin#Get(a:plugin)
+endfunction
