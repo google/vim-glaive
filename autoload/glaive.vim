@@ -59,13 +59,11 @@ endfunction
 "
 " @throws NotFound if {plugin} cannot be found.
 function! glaive#GetPlugin(plugin) abort
-  let l:canonical_name = maktaba#plugin#CanonicalName(a:plugin)
-
   " First, check whether the plugin was already registered with maktaba.
-  let l:registered_plugins = maktaba#plugin#RegisteredPlugins()
-  if index(l:registered_plugins, l:canonical_name) >= 0
-    return maktaba#plugin#Get(l:canonical_name)
-  endif
+  try
+    return maktaba#plugin#Get(a:plugin)
+  catch /ERROR(NotFound):/
+  endtry
   
   " Get the maktaba plugin object for a plugin already on the runtimepath.
   " If the plugin was installed with a plugin manager like pathogen or vundle,
@@ -73,6 +71,7 @@ function! glaive#GetPlugin(plugin) abort
   " by maktaba. maktaba#plugin#Install is what forces the flags file to load
   " during vimrc time, so we need to make sure that the plugin has been
   " maktaba#plugin#Install'd before we can configure it.
+  let l:canonical_name = maktaba#plugin#CanonicalName(a:plugin)
   let l:plugins = maktaba#rtp#LeafDirs()
   for l:key in keys(l:plugins)
     if maktaba#plugin#CanonicalName(l:key) ==# l:canonical_name
