@@ -36,6 +36,24 @@ endfunction
 
 ""
 " @usage plugin [operation...]
+"
+" {plugin} should be the canonical name for the plugin; see
+" |maktaba#plugin#CanonicalName|.  Actually, anything which evaluates to the
+" canonical name will work just as well; if you simply supply the path name of
+" the plugin, it will still work.
+"
+" For instance, a plugin stored in a "my-plugin" folder can be
+" configured with any of the following forms:
+" >
+"   " Canonical name (preferred).
+"   :Glaive my_plugin flag
+"   " Folder name.
+"   :Glaive my-plugin flag
+"   " Something weird which evaluates to the canonical name (valid, but
+"   " not recommended).
+"   :Glaive my!plugin flag
+" <
+"
 " Each [operation] may be in any of the following forms. They should be
 " separated by whitespace. The syntax for updating settings is as follows:
 "
