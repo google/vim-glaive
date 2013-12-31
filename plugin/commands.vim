@@ -38,9 +38,9 @@ endfunction
 " @usage plugin [operation...]
 "
 " {plugin} should be the canonical name for the plugin; see
-" @function(maktaba#plugin#CanonicalName).  Actually, anything which
-" evaluates to the canonical name will work just as well; if you simply
-" supply the path name of the plugin, it will still work.
+" |maktaba#plugin#CanonicalName|.  Actually, anything which evaluates to the
+" canonical name will work just as well; if you simply supply the path name of
+" the plugin, it will still work.
 "
 " For instance, a plugin stored in a "my-plugin" folder can be
 " configured with any of the following forms:

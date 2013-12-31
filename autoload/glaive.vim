@@ -64,7 +64,7 @@ function! glaive#GetPlugin(plugin) abort
     return maktaba#plugin#Get(a:plugin)
   catch /ERROR(NotFound):/
   endtry
-  
+
   " Get the maktaba plugin object for a plugin already on the runtimepath.
   " If the plugin was installed with a plugin manager like pathogen or vundle,
   " then it's possible that it's on the runtimepath but hasn't been "Installed"
