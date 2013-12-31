@@ -80,8 +80,6 @@ function! glaive#GetPlugin(plugin) abort
     endif
   endfor
 
-  " The plugin does not appear to be on the runtimepath, but we'll check whether
-  " it's registered with maktaba anyway. This is expected to fail with
-  " a NotFound error unless maktaba#rtp#LeafDirs was lying to us.
-  return maktaba#plugin#Get(l:canonical_name)
+  " If we're still here, we can't find the plugin.
+  throw maktaba#error#NotFound('Plugin %s', a:plugin)
 endfunction
