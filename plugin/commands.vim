@@ -23,8 +23,8 @@ function! s:Glaive(args) abort
   try
     let [l:name, l:operations] = glaive#SplitPluginNameFromOperations(a:args)
     let l:plugin = glaive#GetPlugin(l:name)
-  catch ERROR(\(BadValue\|NotFound\))/
-    call matkaba#error#Shout(v:exception)
+  catch /ERROR(\(BadValue\|NotFound\)):/
+    call maktaba#error#Shout(v:exception)
     return
   endtry
   try
