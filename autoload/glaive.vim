@@ -1,6 +1,6 @@
 let s:thisplugin = expand('<sfile>:p:h:h')
 let s:qargpattern = '\v\s*(\S+)%(\s+(.*))?$'
-let s:cmdlinepattern = '\v\CGlaive[!]?\s*(\S*)\s*(.*)$'
+let s:cmdlinepattern = '\v\CG%[laive][!]?\s*(\S*)\s*(.*)$'
 
 
 ""
@@ -52,9 +52,9 @@ endfunction
 " and meaning of {ArgLead}, {CmdLine}, and {CursorPos} are conventional, see
 " |:command-completion-customlist|.
 function! glaive#Complete(ArgLead, CmdLine, CursorPos) abort
-  " This pattern must be somewhat permissive because ": ::4,'XGlaive! ..." is
+  " This pattern must be somewhat permissive because ": ::4,'XGlaiv! ..." is
   " entirely within possibility as the beginning of {CmdLine}.
-  let l:nameendpos = matchend(a:CmdLine, '\v\CGlaive[!]?\s+\S*')
+  let l:nameendpos = matchend(a:CmdLine, '\v\CG%[laive][!]?\s+\S*')
   if a:CursorPos <= l:nameendpos
     return s:CompletePluginName(a:ArgLead)
   else
