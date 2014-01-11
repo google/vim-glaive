@@ -1,5 +1,6 @@
 let s:thisplugin = expand('<sfile>:p:h:h')
 let s:qargpattern = '\v\s*(\S+)%(\s+(.*))?$'
+let s:cmdlinepattern = '\v\CGlaive[!]?\s*(\S*)\s*(.*)$'
 
 
 ""
@@ -10,6 +11,62 @@ let s:qargpattern = '\v\s*(\S+)%(\s+(.*))?$'
 function! glaive#Install() abort
   let l:glaive = maktaba#plugin#GetOrInstall(s:thisplugin)
   call l:glaive.Load('commands')
+endfunction
+
+
+" Returns completion candidates for the partial plugin name {string}.
+function! s:CompletePluginName(string) abort
+  let l:plugins = maktaba#plugin#RegisteredPlugins()
+  let l:canonical_name = maktaba#plugin#CanonicalName(a:string)
+  call filter(l:plugins, 'maktaba#string#StartsWith(v:val, l:canonical_name)')
+  return l:plugins
+endfunction
+
+
+" Returns completion candidates for the partial flag operation {string} for
+" plugin {plugin}.
+function! s:CompleteOperation(plugin, string) abort
+  let l:unaryop = matchstr(a:string, '\v^[!~]?')
+  let l:flagstring = maktaba#string#StripLeading(a:string, '!~')
+  if maktaba#string#EndsWith(l:flagstring, '=')
+    " When flag ends in '=', complete with the current value.
+    let l:flagname = substitute(l:flagstring, '\v[-+^$`]?\=$', '', '')
+    try
+      " l:Flagvalue must be capitalized because it may receive a Funcref.
+      let l:Flagvalue = a:plugin.Flag(l:flagname)
+    catch /ERROR(\(NotFound\|BadValue\)):/
+      return []
+    endtry
+    return [l:unaryop . l:flagstring . string(l:Flagvalue)]
+  else
+    let l:flags = keys(a:plugin.flags)
+    call filter(l:flags, 'maktaba#string#StartsWith(v:val, l:flagstring)')
+    return map(l:flags, 'l:unaryop . v:val')
+  endif
+endfunction
+
+
+""
+" Custom completion for the :Glaive command. Completion is performed for the
+" plugin name, the flag string, and the current flag value after '='. The names
+" and meaning of {ArgLead}, {CmdLine}, and {CursorPos} are conventional, see
+" |:command-completion-customlist|.
+function! glaive#Complete(ArgLead, CmdLine, CursorPos) abort
+  " This pattern must be somewhat permissive because ": ::4,'XGlaive! ..." is
+  " entirely within possibility as the beginning of {CmdLine}.
+  let l:nameendpos = matchend(a:CmdLine, '\v\CGlaive[!]?\s+\S*')
+  if a:CursorPos <= l:nameendpos
+    return s:CompletePluginName(a:ArgLead)
+  else
+    " s:cmdlinepattern must always match a:CmdLine.
+    let [l:name, l:operations] = matchlist(a:CmdLine, s:cmdlinepattern)[1:2]
+    try
+      let l:plugin = maktaba#plugin#Get(l:name)
+    catch /ERROR(NotFound):/
+      return []
+    endtry
+    return s:CompleteOperation(l:plugin, a:ArgLead)
+  endif
 endfunction
 
 
