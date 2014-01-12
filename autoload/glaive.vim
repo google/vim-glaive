@@ -23,34 +23,77 @@ function! s:CompletePluginName(string) abort
 endfunction
 
 
-" Returns completion candidates for the partial flag operation {string} for
-" plugin {plugin}.
-function! s:CompleteOperation(plugin, string) abort
+" Adds the current value to the end of the flag assignment {string}.
+function! s:CompleteCurrentFlagValue(plugin, string) abort
+  let l:flagname = substitute(a:string, '\v[-+^$`]?\=$', '', '')
+  try
+    " l:Flagvalue must be capitalized because it may receive a Funcref.
+    let l:Flagvalue = a:plugin.Flag(l:flagname)
+  catch /ERROR(\(NotFound\|BadValue\)):/
+    return []
+  endtry
+  if maktaba#value#IsString(l:Flagvalue) || maktaba#value#IsNumeric(l:Flagvalue)
+    let l:valstring = string(l:Flagvalue)
+  else
+    let l:valstring = '`' . string(l:Flagvalue) . '`'
+  endif
+  return [a:string . l:valstring]
+endfunction
+
+
+" Returns completion candidates for the partial flag handle {string}.
+function! s:CompleteFlagHandle(plugin, string) abort
   let l:unaryop = matchstr(a:string, '\v^[!~]?')
-  let l:flagstring = maktaba#string#StripLeading(a:string, '!~')
-  if maktaba#string#EndsWith(l:flagstring, '=')
-    " When flag ends in '=', complete with the current value.
-    let l:flagname = substitute(l:flagstring, '\v[-+^$`]?\=$', '', '')
+  let l:handle = maktaba#string#StripLeading(a:string, '!~')
+
+  let l:isplain = 0
+  try
+    let [l:flagname, l:foci, l:rest] = maktaba#setting#ParseHandle(l:handle)
+  catch /ERROR(BadValue):/
+    " This exception is thrown for an empty handle, too. Try plain completion.
+    let l:isplain = 1
+  endtry
+
+  if l:isplain || empty(l:foci) && empty(l:rest)
+    " Complete a plain flag name.
+    let l:flags = keys(a:plugin.flags)
+    call filter(l:flags, 'maktaba#string#StartsWith(v:val, l:handle)')
+    return map(l:flags, 'l:unaryop . v:val')
+  elseif maktaba#string#StartsWith(l:rest, '[')
     try
-      " l:Flagvalue must be capitalized because it may receive a Funcref.
-      let l:Flagvalue = a:plugin.Flag(l:flagname)
-    catch /ERROR(\(NotFound\|BadValue\)):/
+      let l:flag = a:plugin.Flag(l:flagname)
+      let l:focus = maktaba#value#Focus(l:flag, l:foci)
+    catch /ERROR(\(BadValue\|NotFound\)):/
       return []
     endtry
-    return [l:unaryop . l:flagstring . string(l:Flagvalue)]
+    if maktaba#value#IsDict(l:focus)
+      " Completion is done only for dictionary type foci.
+      let l:handleprefix = l:flagname . join(map(l:foci, '"[".v:val."]"'), '')
+      let l:current = maktaba#string#StripLeading(l:rest, '[')
+      let l:candidates = keys(l:focus)
+      call filter(l:candidates, 'maktaba#string#StartsWith(v:val, l:current)')
+      return map(l:candidates, 'l:unaryop . l:handleprefix . "[" . v:val')
+    endif
+  endif
+  return []
+endfunction
+
+
+" Returns completion candidates for partial operation {string} for {plugin}.
+function! s:CompleteOperation(plugin, string) abort
+  if maktaba#string#EndsWith(a:string, '=')
+    return s:CompleteCurrentFlagValue(a:plugin, a:string)
   else
-    let l:flags = keys(a:plugin.flags)
-    call filter(l:flags, 'maktaba#string#StartsWith(v:val, l:flagstring)')
-    return map(l:flags, 'l:unaryop . v:val')
+    return s:CompleteFlagHandle(a:plugin, a:string)
   endif
 endfunction
 
 
 ""
 " Custom completion for the :Glaive command. Completion is performed for the
-" plugin name, the flag string, and the current flag value after '='. The names
+" plugin name, the flag handle, and the current flag value after '='. The names
 " and meaning of {ArgLead}, {CmdLine}, and {CursorPos} are conventional, see
-" |:command-completion-customlist|.
+" |:command-completion-custom|.
 function! glaive#Complete(ArgLead, CmdLine, CursorPos) abort
   " This pattern must be somewhat permissive because ": ::4,'XGlaiv! ..." is
   " entirely within possibility as the beginning of {CmdLine}.
