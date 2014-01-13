@@ -46,6 +46,9 @@ function! s:CompleteFlagHandle(plugin, string) abort
   let l:unaryop = matchstr(a:string, '\v^[!~]?')
   let l:handle = maktaba#string#StripLeading(a:string, '!~')
 
+  " No sophisticated decision making here. We first assume that the string is a
+  " handle with foci and attempt to parse it. If this fails, we assume the flag
+  " to be "plain" (simple flag, no foci) and take the simpler route below.
   let l:isplain = 0
   try
     let [l:flagname, l:foci, l:rest] = maktaba#setting#ParseHandle(l:handle)
@@ -55,7 +58,7 @@ function! s:CompleteFlagHandle(plugin, string) abort
   endtry
 
   if l:isplain || empty(l:foci) && empty(l:rest)
-    " Complete a plain flag name.
+    " Complete just the flag name.
     let l:flags = keys(a:plugin.flags)
     call filter(l:flags, 'maktaba#string#StartsWith(v:val, l:handle)')
     return map(l:flags, 'l:unaryop . v:val')
@@ -66,14 +69,18 @@ function! s:CompleteFlagHandle(plugin, string) abort
     catch /ERROR(\(BadValue\|NotFound\)):/
       return []
     endtry
+    " Do completion for dictionary and list type foci.
     if maktaba#value#IsDict(l:focus)
-      " Completion is done only for dictionary type foci.
-      let l:handleprefix = l:flagname . join(map(l:foci, '"[".v:val."]"'), '')
-      let l:current = maktaba#string#StripLeading(l:rest, '[')
       let l:candidates = keys(l:focus)
-      call filter(l:candidates, 'maktaba#string#StartsWith(v:val, l:current)')
-      return map(l:candidates, 'l:unaryop . l:handleprefix . "[" . v:val')
+    elseif maktaba#value#IsList(l:focus)
+      let l:candidates = map(range(len(l:focus)), 'string(v:val)')
+    else
+      return []
     endif
+    let l:handleprefix = l:flagname . join(map(l:foci, '"[".v:val."]"'), '')
+    let l:current = maktaba#string#StripLeading(l:rest, '[')
+    call filter(l:candidates, 'maktaba#string#StartsWith(v:val, l:current)')
+    return map(l:candidates, 'l:unaryop . l:handleprefix . "[" . v:val')
   endif
   return []
 endfunction
