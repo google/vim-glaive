@@ -129,4 +129,5 @@ endfunction
 " The return value of the function will become the new value of the flag.
 "
 " For more detail, see |maktaba.Setting|.
-command -nargs=+ Glaive call s:Glaive(<q-args>)
+command -nargs=+ -complete=customlist,glaive#Complete Glaive
+    \ call s:Glaive(<q-args>)

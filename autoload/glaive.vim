@@ -1,5 +1,6 @@
 let s:thisplugin = expand('<sfile>:p:h:h')
 let s:qargpattern = '\v\s*(\S+)%(\s+(.*))?$'
+let s:cmdlinepattern = '\v\CG%[laive][!]?\s*(\S*)\s*(.*)$'
 
 
 ""
@@ -10,6 +11,112 @@ let s:qargpattern = '\v\s*(\S+)%(\s+(.*))?$'
 function! glaive#Install() abort
   let l:glaive = maktaba#plugin#GetOrInstall(s:thisplugin)
   call l:glaive.Load('commands')
+endfunction
+
+
+" Returns completion candidates for the partial plugin name {string}.
+function! s:CompletePluginName(string) abort
+  let l:plugins = maktaba#plugin#RegisteredPlugins()
+  let l:canonical_name = maktaba#plugin#CanonicalName(a:string)
+  call filter(l:plugins, 'maktaba#string#StartsWith(v:val, l:canonical_name)')
+  return l:plugins
+endfunction
+
+
+" Adds the current value to the end of the flag assignment {string}.
+function! s:CompleteCurrentFlagValue(plugin, string) abort
+  let l:flagname = substitute(a:string, '\v[-+^$`]?\=$', '', '')
+  try
+    " l:Flagvalue must be capitalized because it may receive a Funcref.
+    let l:Flagvalue = a:plugin.Flag(l:flagname)
+  catch /ERROR(\(NotFound\|BadValue\)):/
+    return []
+  endtry
+  if maktaba#value#IsString(l:Flagvalue) || maktaba#value#IsNumeric(l:Flagvalue)
+    let l:valstring = string(l:Flagvalue)
+  else
+    let l:valstring = '`' . string(l:Flagvalue) . '`'
+  endif
+  return [a:string . l:valstring]
+endfunction
+
+
+" Returns completion candidates for the partial flag handle {string}.
+function! s:CompleteFlagHandle(plugin, string) abort
+  let l:unaryop = matchstr(a:string, '\v^[!~]?')
+  let l:handle = maktaba#string#StripLeading(a:string, '!~')
+
+  " No sophisticated decision making here. We first assume that the string is a
+  " handle with foci and attempt to parse it. If this fails, we assume the flag
+  " to be "plain" (simple flag, no foci) and take the simpler route below.
+  let l:isplain = 0
+  try
+    let [l:flagname, l:foci, l:rest] = maktaba#setting#ParseHandle(l:handle)
+  catch /ERROR(BadValue):/
+    " This exception is thrown for an empty handle, too. Try plain completion.
+    let l:isplain = 1
+  endtry
+
+  if l:isplain || empty(l:foci) && empty(l:rest)
+    " Complete just the flag name.
+    let l:flags = keys(a:plugin.flags)
+    call filter(l:flags, 'maktaba#string#StartsWith(v:val, l:handle)')
+    return map(l:flags, 'l:unaryop . v:val')
+  elseif maktaba#string#StartsWith(l:rest, '[')
+    try
+      let l:flag = a:plugin.Flag(l:flagname)
+      let l:focus = maktaba#value#Focus(l:flag, l:foci)
+    catch /ERROR(\(BadValue\|NotFound\)):/
+      return []
+    endtry
+    " Do completion for dictionary and list type foci.
+    if maktaba#value#IsDict(l:focus)
+      let l:candidates = keys(l:focus)
+    elseif maktaba#value#IsList(l:focus)
+      let l:candidates = map(range(len(l:focus)), 'string(v:val)')
+    else
+      return []
+    endif
+    let l:handleprefix = l:flagname . join(map(l:foci, '"[".v:val."]"'), '')
+    let l:current = maktaba#string#StripLeading(l:rest, '[')
+    call filter(l:candidates, 'maktaba#string#StartsWith(v:val, l:current)')
+    return map(l:candidates, 'l:unaryop . l:handleprefix . "[" . v:val')
+  endif
+  return []
+endfunction
+
+
+" Returns completion candidates for partial operation {string} for {plugin}.
+function! s:CompleteOperation(plugin, string) abort
+  if maktaba#string#EndsWith(a:string, '=')
+    return s:CompleteCurrentFlagValue(a:plugin, a:string)
+  else
+    return s:CompleteFlagHandle(a:plugin, a:string)
+  endif
+endfunction
+
+
+""
+" Custom completion for the :Glaive command. Completion is performed for the
+" plugin name, the flag handle, and the current flag value after '='. The names
+" and meaning of {ArgLead}, {CmdLine}, and {CursorPos} are conventional, see
+" |:command-completion-custom|.
+function! glaive#Complete(ArgLead, CmdLine, CursorPos) abort
+  " This pattern must be somewhat permissive because ": ::4,'XGlaiv! ..." is
+  " entirely within possibility as the beginning of {CmdLine}.
+  let l:nameendpos = matchend(a:CmdLine, '\v\CG%[laive][!]?\s+\S*')
+  if a:CursorPos <= l:nameendpos
+    return s:CompletePluginName(a:ArgLead)
+  else
+    " s:cmdlinepattern must always match a:CmdLine.
+    let [l:name, l:operations] = matchlist(a:CmdLine, s:cmdlinepattern)[1:2]
+    try
+      let l:plugin = maktaba#plugin#Get(l:name)
+    catch /ERROR(NotFound):/
+      return []
+    endtry
+    return s:CompleteOperation(l:plugin, a:ArgLead)
+  endif
 endfunction
 
 
