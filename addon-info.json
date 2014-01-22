@@ -1,6 +1,7 @@
 {
   "description": "Global Setting Avoidance.",
   "author": "Google",
+  "repository": {"type": "git", "url": "git://github.com/google/glaive"},
   "dependencies": {
     "maktaba": {"type": "git", "url": "git://github.com/google/maktaba"}
   }
