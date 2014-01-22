@@ -1,0 +1,7 @@
+{
+  "description": "Global Setting Avoidance.",
+  "author": "Google",
+  "dependencies": {
+    "maktaba": {"type": "git", "url": "git://github.com/google/maktaba"}
+  }
+}
