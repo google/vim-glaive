@@ -1,6 +1,4 @@
 " @stylized Glaive
-" @tagline Global Setting Avoidance.
-" @author Google
 "
 " Provides a user interface for maktaba settings. With Glaive, setting
 " manipulation looks like this:
