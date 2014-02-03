@@ -1,5 +1,5 @@
-*glaive* - Global Setting Avoidance.                                  *Glaive*
-Google
+*glaive.txt*	Global Setting Avoidance.
+Google                                                       *Glaive* *glaive*
 
 ==============================================================================
 CONTENTS                                                     *glaive-contents*
