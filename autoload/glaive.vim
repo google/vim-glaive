@@ -189,3 +189,11 @@ function! glaive#GetPlugin(plugin) abort
   " If we're still here, we can't find the plugin.
   throw maktaba#error#NotFound('Plugin %s', a:plugin)
 endfunction
+
+function! glaive#PrintCurrentConfiguration(plugin) abort
+  echomsg 'Flags for ' . a:plugin.name . ':'
+  let l:flag_names = sort(keys(a:plugin.flags))
+  for l:name in l:flag_names
+    echomsg l:name . ': ' . string(a:plugin.flags[l:name].Get())
+  endfor
+endfunction
