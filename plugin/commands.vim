@@ -1,3 +1,5 @@
+""
+" @section Introduction, intro
 " @stylized Glaive
 "
 " Provides a user interface for maktaba settings. With Glaive, setting

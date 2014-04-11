@@ -44,6 +44,9 @@ COMMANDS                                                     *glaive-commands*
     :Glaive my!plugin flag
 <
 
+  If no [operation]s are given, the current value of all flags in {plugin} is
+  printed.
+
   Each [operation] may be in any of the following forms. They should be
   separated by whitespace. The syntax for updating settings is as follows:
 
