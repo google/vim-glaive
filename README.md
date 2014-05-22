@@ -23,8 +23,8 @@ helpfiles in the `doc/` directory. The helpfiles are also available via
 
 # Usage example
 
-This example uses [Vundle](https://github.com/gmarik/vundle), whose
-plugin-adding command is `Bundle`.
+This example uses [Vundle](https://github.com/gmarik/Vundle.vim), whose
+plugin-adding command is `Plugin`.
 
 The example maktaba plugin is
 [helloworld](https://github.com/google/maktaba/tree/master/examples/helloworld),
@@ -35,8 +35,8 @@ We will use Glaive to enable mappings and set the `name` option to "Bram".
 ```vim
 " Add maktaba and glaive to the runtimepath.
 " (The latter must be installed before it can be used.)
-Bundle 'google/maktaba'
-Bundle 'google/glaive'
+Plugin 'google/maktaba'
+Plugin 'google/glaive'
 call glaive#Install()
 
 " Add helloworld to the runtime path.  (Normally this would be done with another
