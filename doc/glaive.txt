@@ -4,7 +4,8 @@ Google                                                       *Glaive* *glaive*
 ==============================================================================
 CONTENTS                                                     *glaive-contents*
   1. Introduction...............................................|glaive-intro|
-  2. Commands................................................|glaive-commands|
+  2. Configuration.............................................|glaive-config|
+  3. Commands................................................|glaive-commands|
 
 ==============================================================================
 INTRODUCTION                                                    *glaive-intro*
@@ -21,6 +22,17 @@ Note: Maktaba handles looking up the plugin, parsing the settings, and
 applying the settings. Glaive is a thin wrapper around maktaba's hooks. Other
 plugins can sport a similar interface with minimal effort. Plugin management
 plugins in particular are encouraged to do so.
+
+==============================================================================
+CONFIGURATION                                                  *glaive-config*
+
+Glaive is a tool for configuring other plugins. The only flag it currently
+defines is a standard maktaba flag to prevent commands from loading, which
+isn't very useful for Glaive itself.
+
+                                                     *glaive:plugin[commands]*
+Configures whether plugin/commands.vim should be loaded.
+Default: 1 `
 
 ==============================================================================
 COMMANDS                                                     *glaive-commands*
