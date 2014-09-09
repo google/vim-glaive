@@ -18,7 +18,7 @@
 " @section Configuration, config
 " Glaive is a tool for configuring other plugins. The only flag it currently
 " defines is a standard maktaba flag to prevent commands from loading, which
-" isn't very useful.
+" isn't very useful for Glaive itself.
 
 let [s:plugin, s:enter] = maktaba#plugin#Enter(expand('<sfile>:p'))
 if !s:enter
