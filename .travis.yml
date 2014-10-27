@@ -7,13 +7,10 @@ before_script:
   - sudo apt-get install python3-dev
   - if [ $CI_TARGET = vim ]; then
       sudo apt-get install vim-gnome &&
-      # Vroom's vim mode currently requires a running X server.
       export DISPLAY=:99.0 &&
       sh -e /etc/init.d/xvfb start;
     elif [ $CI_TARGET = neovim ]; then
-      # Install neovim.
       eval "$(curl -Ss https://raw.githubusercontent.com/neovim/bot-ci/master/scripts/travis-setup.sh) nightly-x64" &&
-      # Install pip and use it to install neovim python-client.
       wget https://bootstrap.pypa.io/get-pip.py &&
       sudo python3 get-pip.py --allow-external sudo &&
       sudo pip3 install neovim;
