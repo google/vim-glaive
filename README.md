@@ -1,12 +1,16 @@
 Glaive is a utility for configuring maktaba plugins. It turns this:
 
-    :let g:myplugin_enablefeature = 1
-    :let g:myplugin_defaultdir = $HOME
-    :let g:myplugin_weirdmode = 'm'
+```VimL
+let g:myplugin_enablefeature = 1
+let g:myplugin_defaultdir = $HOME
+let g:myplugin_weirdmode = 'm'
+```
 
 into this:
 
-    :Glaive myplugin enablefeature defaultdir=`$HOME` weirdmode='m'
+```VimL
+Glaive myplugin enablefeature defaultdir=`$HOME` weirdmode='m'
+```
 
 In order for this to work, the plugin must use the maktaba flag API. Any plugin
 using the flag API can be configured by glaive.
@@ -32,14 +36,14 @@ from the maktaba examples directory.
 
 We will use Glaive to enable mappings and set the `name` option to "Bram".
 
-```vim
+```VimL
 " Add maktaba and glaive to the runtimepath.
 " (The latter must be installed before it can be used.)
 Plugin 'google/maktaba'
 Plugin 'google/glaive'
 call glaive#Install()
 
-" Add helloworld to the runtime path.  (Normally this would be done with another
+" Add helloworld to the runtime path. (Normally this would be done with another
 " Bundle command, but helloworld doesn't have a repository of its own.)
 call maktaba#plugin#Install(maktaba#path#Join([maktaba#Maktaba().location,
     \ 'examples', 'helloworld']))
