@@ -9,8 +9,9 @@ if !exists('*maktaba#compatibility#Disable')
     let s:rtpsave = &runtimepath
     " We'd like to use maktaba#path#Join, but maktaba doesn't exist yet.
     let s:slash = exists('+shellslash') && !&shellslash ? '\' : '/'
-    let s:pathguess = fnamemodify(s:thisplugin, ':h') . s:slash . 'maktaba'
-    let &runtimepath .= ',' . s:pathguess
+    let s:guess1 = fnamemodify(s:thisplugin, ':h') . s:slash . 'maktaba'
+    let s:guess2 = fnamemodify(s:thisplugin, ':h') . s:slash . 'vim-maktaba'
+    let &runtimepath .= ',' . s:guess1 . ',' . s:guess2
     try
       " If we've just installed maktaba, we need to make sure that vi
       " compatibility mode is off. Maktaba does not support vi compatibility.
@@ -24,7 +25,7 @@ if !exists('*maktaba#compatibility#Disable')
       echomsg 'Maktaba not found! Glaive depends upon maktaba. Please either:'
       echomsg '1. Place maktaba in the same directory as this plugin.'
       echomsg '2. Add maktaba to your runtimepath before using this plugin.'
-      echomsg 'Maktaba can be found at http://github.com/google/maktaba.'
+      echomsg 'Maktaba can be found at http://github.com/google/vim-maktaba.'
       echohl NONE
       finish
     endtry
