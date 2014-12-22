@@ -11,7 +11,11 @@ if !exists('*maktaba#compatibility#Disable')
     let s:slash = exists('+shellslash') && !&shellslash ? '\' : '/'
     let s:guess1 = fnamemodify(s:thisplugin, ':h') . s:slash . 'maktaba'
     let s:guess2 = fnamemodify(s:thisplugin, ':h') . s:slash . 'vim-maktaba'
-    let &runtimepath .= ',' . s:guess1 . ',' . s:guess2
+    if isdirectory(s:guess1)
+      let &runtimepath .= ',' . s:guess1
+    elseif isdirectory(s:guess2)
+      let &runtimepath .= ',' . s:guess2
+    endif
     try
       " If we've just installed maktaba, we need to make sure that vi
       " compatibility mode is off. Maktaba does not support vi compatibility.
