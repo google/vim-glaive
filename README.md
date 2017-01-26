@@ -27,30 +27,49 @@ helpfiles in the `doc/` directory. The helpfiles are also available via
 
 # Usage example
 
-This example uses [Vundle](https://github.com/gmarik/Vundle.vim), whose
-plugin-adding command is `Plugin`.
+This example uses [Vundle.vim](https://github.com/VundleVim/Vundle.vim), whose
+plugin-adding command is `Plugin`. Note that Vundle does not add plugins to the
+runtime path until `vundle#end()`, so Glaive commands must come after this
+function call.
 
-The example maktaba plugin is
-[helloworld](https://github.com/google/maktaba/tree/master/examples/helloworld),
-from the maktaba examples directory.
+We will use two plugins for demonstration:
 
-We will use Glaive to enable mappings and set the `name` option to "Bram".
+* [helloworld](https://github.com/google/maktaba/tree/master/examples/helloworld),
+  which is an example plugin that comes with
+  [maktaba](https://github.com/google/maktaba).
+* [vim-codefmt](https://github.com/google/vim-codefmt) which is a real-world
+  plugin used for autoformatting code.
 
 ```VimL
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+...
+
 " Add maktaba and glaive to the runtimepath.
 " (The latter must be installed before it can be used.)
 Plugin 'google/vim-maktaba'
 Plugin 'google/vim-glaive'
-call glaive#Install()
+Plugin 'google/vim-codefmt'
+
+...
+
+vundle#end()
+filetype plugin indent on
 
 " Add helloworld to the runtime path. (Normally this would be done with another
 " Bundle command, but helloworld doesn't have a repository of its own.)
 call maktaba#plugin#Install(maktaba#path#Join([maktaba#Maktaba().location,
     \ 'examples', 'helloworld']))
 
+call glaive#Install()
+
 " Configure helloworld using glaive.
 Glaive helloworld plugin[mappings] name='Bram'
+
+" Real world example: configure vim-codefmt
+Glaive codefmt google_java_executable='java -jar /path/to/google-java-format.jar'
 ```
 
-Try it out!  `<Leader>Hh` should say `Hello, Bram!`, and `<Leader>Hg` should say
+Now, `<Leader>Hh` should say `Hello, Bram!`, and `<Leader>Hg` should say
 `Goodbye, Bram!`.  (Recall that `<Leader>` defaults to `\`.)
