@@ -46,8 +46,8 @@ call vundle#begin()
 
 ...
 
-" Add maktaba and glaive to the runtimepath.
-" (The latter must be installed before it can be used.)
+" Add maktaba, glaive, and codefmt to the runtimepath.
+" (Glaive must also be installed before it can be used.)
 Plugin 'google/vim-maktaba'
 Plugin 'google/vim-glaive'
 Plugin 'google/vim-codefmt'
@@ -58,7 +58,7 @@ vundle#end()
 filetype plugin indent on
 
 " Add helloworld to the runtime path. (Normally this would be done with another
-" Bundle command, but helloworld doesn't have a repository of its own.)
+" Plugin command, but helloworld doesn't have a repository of its own.)
 call maktaba#plugin#Install(maktaba#path#Join([maktaba#Maktaba().location,
     \ 'examples', 'helloworld']))
 
