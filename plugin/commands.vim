@@ -11,7 +11,7 @@
 "
 " Note: Maktaba handles looking up the plugin, parsing the settings, and
 " applying the settings. Glaive is a thin wrapper around maktaba's hooks. Other
-" plugins can sport a similar interface with minimal effort. Plugin management
+" plugins can support a similar interface with minimal effort. Plugin management
 " plugins in particular are encouraged to do so.
 
 ""
