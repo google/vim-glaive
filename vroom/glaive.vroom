@@ -37,18 +37,15 @@ And best of all, if your plugin uses maktaba flags, users have access to the
 pleasing manner. Let's have an example, shall we?
 
 In order for these tests to work, maktaba MUST be in the same directory as
-glaive. Given that that's the case, all we have to do is source the glaive
-bootstrap file.
+glaive. Given that that's the case, all we have to do is source the
+setupvroom.vim file, which bootstraps the glaive plugin and configures it to
+work properly under vroom.
 
-  :set nocompatible
-  :let g:glaivedir = fnamemodify($VROOMFILE, ':p:h:h')
-  :let g:bootstrapfile = g:glaivedir . '/bootstrap.vim'
-  :execute 'source' g:bootstrapfile
+  :source $VROOMDIR/setupvroom.vim
 
 Then we can install a plugin full of flags:
 
-  :let g:thisdir = fnamemodify($VROOMFILE, ':p:h')
-  :let g:path = maktaba#path#Join([g:thisdir, 'fakeplugins', 'fullplugin'])
+  :let g:path = maktaba#path#Join([$VROOMDIR, 'fakeplugins', 'fullplugin'])
   :let g:plugin = maktaba#plugin#Install(g:path)
 
 You can go browse through fakeplugins/fullplugin if you like: It defines

@@ -3,15 +3,11 @@ introduction to glaive syntax.
 
 Install glaive:
 
-  :set nocompatible
-  :let g:glaivedir = fnamemodify($VROOMFILE, ':p:h:h')
-  :let g:bootstrapfile = g:glaivedir . '/bootstrap.vim'
-  :execute 'source' g:bootstrapfile
+  :source $VROOMDIR/setupvroom.vim
 
 Install a plugin:
 
-  :let g:thisdir = fnamemodify($VROOMFILE, ':p:h')
-  :let g:path = maktaba#path#Join([g:thisdir, 'fakeplugins', 'fullplugin'])
+  :let g:path = maktaba#path#Join([$VROOMDIR, 'fakeplugins', 'fullplugin'])
   :let g:plugin = maktaba#plugin#Install(g:path)
 
 Define a numeric flag:

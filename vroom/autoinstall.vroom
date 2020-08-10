@@ -5,16 +5,12 @@ To see how, we start by installing Glaive. In order for these tests to work,
 maktaba MUST be in the same directory as Glaive. Given that's the case, let's
 get Glaive installed:
 
-  :set nocompatible
-  :let g:glaivedir = fnamemodify($VROOMFILE, ':p:h:h')
-  :let g:bootstrapfile = g:glaivedir . '/bootstrap.vim'
-  :execute 'source' g:bootstrapfile
+  :source $VROOMDIR/setupvroom.vim
 
 Now, assume that some plugin manager has added the 'fullplugin' plugin to the
 runtimepath somehow.
 
-  :let g:thisdir = fnamemodify($VROOMFILE, ':p:h')
-  :let g:path = maktaba#path#Join([g:thisdir, 'fakeplugins', 'fullplugin'])
+  :let g:path = maktaba#path#Join([$VROOMDIR, 'fakeplugins', 'fullplugin'])
   :call maktaba#rtp#Add(g:path)
 
 This plugin has NOT been installed by maktaba: it's on the runtimepath, but its
